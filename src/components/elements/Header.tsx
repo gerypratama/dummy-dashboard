@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useNavigate, useRouter } from "@tanstack/react-router";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
 import LogoutDialog from "./LogoutDialog";
 
@@ -19,7 +20,7 @@ export default function Header() {
   const isCollapsed = state === "collapsed";
 
   const handleLogout = () => {
-    sessionStorage.removeItem("isAuth");
+    Cookies.remove("accessToken");
     router.invalidate();
     toast.success("Logout success");
     navigate({ to: "/" });

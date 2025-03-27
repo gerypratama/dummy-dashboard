@@ -10,12 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
+// interface ILoginError extends AxiosError {
+//   data: {
+//     message: string;
+//   };
+// }
+
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
-    const isAuth = sessionStorage.getItem("isAuth") === "true";
+    const isAuth = !!Cookies.get("accessToken");
     if (isAuth) {
       throw redirect({
         to: "/dashboard",
@@ -34,32 +42,24 @@ function App() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const res = await fetch("https://dummyjson.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-        // credentials: "include", // Include cookies (e.g., accessToken) in the request
+      const res = await axios.post("https://dummyjson.com/auth/login", {
+        username: username,
+        password: password,
       });
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-
-      return await res.json();
+      return await res.data;
     },
     onSuccess: async (res) => {
       if (res.accessToken) {
-        sessionStorage.setItem("isAuth", "true");
+        const { accessToken } = res;
+        Cookies.set("accessToken", accessToken, { expires: 60, secure: true });
         toast.success("Login success");
         router.invalidate();
         navigate({ to: "/dashboard" });
       }
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
+    onError: (error: AxiosError) => {
+      const errMsg = error.response?.data.message;
+      toast.error(errMsg);
       setUsername("");
       setPassword("");
     },
