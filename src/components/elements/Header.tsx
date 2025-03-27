@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSidebar } from "@/components/ui/sidebar";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import LogoutDialog from "./LogoutDialog";
@@ -14,6 +15,8 @@ import LogoutDialog from "./LogoutDialog";
 export default function Header() {
   const router = useRouter();
   const navigate = useNavigate();
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
 
   const handleLogout = () => {
     sessionStorage.removeItem("isAuth");
@@ -23,7 +26,15 @@ export default function Header() {
   };
 
   return (
-    <header className="flex justify-end bg-gray-700 p-4">
+    <header
+      className={`flex bg-gray-700 p-4 ${isCollapsed ? "justify-between" : "justify-end"}`}
+    >
+      {isCollapsed && (
+        <p className="text-gray-200 text-xl">
+          <span className="font-semibold">Dummy</span>
+          <span className="font-light">Dash</span>
+        </p>
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>
