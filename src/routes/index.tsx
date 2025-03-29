@@ -8,18 +8,17 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { axiosInstance } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import axios, { AxiosError } from "axios";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { AxiosError, type AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
-// interface ILoginError extends AxiosError {
-//   data: {
-//     message: string;
-//   };
-// }
+interface ILoginError extends AxiosError {
+  response?: AxiosResponse<{ message: string }>;
+}
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
@@ -37,12 +36,11 @@ export const Route = createFileRoute("/")({
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
   const navigate = Route.useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const res = await axios.post("https://dummyjson.com/auth/login", {
+      const res = await axiosInstance.post("auth/login", {
         username: username,
         password: password,
       });
@@ -51,14 +49,13 @@ function App() {
     onSuccess: async (res) => {
       if (res.accessToken) {
         const { accessToken } = res;
-        Cookies.set("accessToken", accessToken, { expires: 60, secure: true });
+        Cookies.set("accessToken", accessToken, { expires: 30, secure: true });
         toast.success("Login success");
-        router.invalidate();
-        navigate({ to: "/dashboard" });
+        await navigate({ to: "/dashboard" });
       }
     },
-    onError: (error: AxiosError) => {
-      const errMsg = error.response?.data.message;
+    onError: (error: ILoginError) => {
+      const errMsg = error.response?.data.message || "Login failed";
       toast.error(errMsg);
       setUsername("");
       setPassword("");
