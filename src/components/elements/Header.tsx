@@ -29,8 +29,6 @@ export default function Header() {
     navigate({ to: "/" });
   };
 
-  console.log(user);
-
   return (
     <header
       className={`flex bg-gray-700 py-4 px-6 ${isCollapsed ? "justify-between" : "justify-end"}`}

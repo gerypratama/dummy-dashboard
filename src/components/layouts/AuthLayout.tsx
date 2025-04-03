@@ -38,7 +38,6 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (data) {
-    // console.log(data);
     setUser(data);
   }
 
@@ -47,7 +46,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       <AppSidebar />
       <main className="bg-gray-800 w-full">
         <Header />
-        <div className="p-4">{children}</div>
+        <div className="flex flex-col gap-2 p-4">{children}</div>
       </main>
     </SidebarProvider>
   );
