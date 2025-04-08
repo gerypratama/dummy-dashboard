@@ -6,12 +6,11 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
-import { ChartPie, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { sidebarNavItems } from "@/constants/sidebarItem";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import SidebarNavItem from "./SidebarNavItem";
 
 export default function AppSidebar() {
   const { state, toggleSidebar } = useSidebar();
@@ -35,17 +34,14 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    to="/dashboard"
-                    activeProps={{ className: "font-bold" }}
-                  >
-                    <ChartPie />
-                    <span>Dashboard</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {sidebarNavItems.map((item) => (
+                <SidebarNavItem
+                  key={item.label}
+                  icon={<item.icon />}
+                  path={item.path}
+                  label={item.label}
+                />
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
