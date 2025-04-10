@@ -11,12 +11,19 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RegisterImport } from './routes/register'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthTestImport } from './routes/_auth/test'
 import { Route as AuthDashboardImport } from './routes/_auth/dashboard'
 
 // Create/Update Routes
+
+const RegisterRoute = RegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AuthRoute = AuthImport.update({
   id: '/_auth',
@@ -59,6 +66,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
       path: '/dashboard'
@@ -93,6 +107,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
+  '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/test': typeof AuthTestRoute
 }
@@ -100,6 +115,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
+  '/register': typeof RegisterRoute
   '/dashboard': typeof AuthDashboardRoute
   '/test': typeof AuthTestRoute
 }
@@ -108,27 +124,36 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/register': typeof RegisterRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/test': typeof AuthTestRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/dashboard' | '/test'
+  fullPaths: '/' | '' | '/register' | '/dashboard' | '/test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/dashboard' | '/test'
-  id: '__root__' | '/' | '/_auth' | '/_auth/dashboard' | '/_auth/test'
+  to: '/' | '' | '/register' | '/dashboard' | '/test'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/register'
+    | '/_auth/dashboard'
+    | '/_auth/test'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  RegisterRoute: typeof RegisterRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  RegisterRoute: RegisterRoute,
 }
 
 export const routeTree = rootRoute
@@ -142,7 +167,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_auth"
+        "/_auth",
+        "/register"
       ]
     },
     "/": {
@@ -154,6 +180,9 @@ export const routeTree = rootRoute
         "/_auth/dashboard",
         "/_auth/test"
       ]
+    },
+    "/register": {
+      "filePath": "register.tsx"
     },
     "/_auth/dashboard": {
       "filePath": "_auth/dashboard.tsx",

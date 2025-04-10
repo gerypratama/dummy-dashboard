@@ -1,16 +1,14 @@
+import UserMgmtLayout from "@/components/layouts/UserMgmtLayout";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  CardFooter
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { axiosInstance } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { AxiosError, type AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import { useState, type FormEvent } from "react";
@@ -68,48 +66,52 @@ function App() {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center">
-      <Card className="w-80 rounded-sm">
-        <CardHeader className="text-center">
-          <CardTitle>DummyDash</CardTitle>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="flex flex-col gap-4 py-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  placeholder="Username"
-                  className="border-gray-500"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  type="password"
-                  id="password"
-                  placeholder="Password"
-                  className="border-gray-500"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-center pt-3">
-              <Button
-                type="submit"
-                className="hover:cursor-pointer"
-                disabled={isPending}
-              >
-                Login
-              </Button>
-            </CardFooter>
-          </form>
-        </CardHeader>
-      </Card>
-    </div>
+    <UserMgmtLayout>
+      <form onSubmit={handleSubmit}>
+        <CardContent className="flex flex-col gap-4 py-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              placeholder="Username"
+              className="border-gray-500"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              type="password"
+              id="password"
+              placeholder="Password"
+              className="border-gray-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-col items-center gap-2 pt-3">
+          <Button
+            type="submit"
+            className="hover:cursor-pointer"
+            disabled={isPending}
+          >
+            Login
+          </Button>
+          <p className="text-sm text-gray-500">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="text-indigo-400 hover:text-indigo-500 hover:cursor-pointer transition-colors duration-150"
+            >
+              Sign up
+            </Link>
+          </p>
+        </CardFooter>
+      </form>
+    </UserMgmtLayout>
   );
 }
